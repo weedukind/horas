@@ -1,0 +1,38 @@
+version: "3.4"
+
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - 7777:80
+    volumes:
+      - ./app:/var/www/app
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - nginxphp
+
+  php:
+    image: weedukind/symfony
+    volumes:
+      - ./app:/var/www/app
+    expose:
+      - 9000
+    networks:
+      - nginxphp
+
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: secret
+    volumes:
+      -  ./mariadb/data:/var/lib/mysql
+    ports:
+      - 8006:3306
+    networks:
+      - nginxphp
+
+networks:
+  nginxphp:
+
+
